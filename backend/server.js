@@ -11,29 +11,35 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 const allowedOrigins = [
-  "https://bookapp1-mg44.vercel.app",
-  "https://bookapp1-mg44-n2ytvh3is-byte-padmanabhans-projects.vercel.app"
+  "https://bookapp1-mg44.vercel.app" // production frontend
 ];
 
-// ✅ Manual CORS headers + preflight handling
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
+  if (origin) {
+    // Allow production URL OR any preview deployment matching your frontend pattern
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith("-byte-padmanabhans-projects.vercel.app")
+    ) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
   }
 
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // Handle preflight requests
-  }
-
+  if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
-
 
 // ✅ Connect to MongoDB
 mongoose

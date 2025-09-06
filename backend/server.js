@@ -11,7 +11,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 const allowedOrigins = [
-  "https://bookapp1-mg44.vercel.app"
+  "https://bookapp1-mg44.vercel.app",
+  "https://bookapp1-mg44-n2ytvh3is-byte-padmanabhans-projects.vercel.app"
 ];
 
 // ✅ Manual CORS headers + preflight handling

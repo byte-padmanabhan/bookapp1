@@ -14,10 +14,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
         <Routes>
-          {/* ✅ Admin routes handled outside AppWrapper */}
-          <Route path="/admin/*" element={<AdminDashboard />} />
+          {/* ✅ Admin dashboard → Fully isolated */}
+          
 
-          {/* ✅ Wrap only user routes inside AppWrapper */}
+          {/* ✅ Wrap only user-facing routes */}
           <Route
             path="/*"
             element={

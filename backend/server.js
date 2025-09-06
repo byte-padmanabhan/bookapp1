@@ -11,21 +11,28 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 const allowedOrigins = [
-  "https://bookapp1-mg44.vercel.app",  // ✅ Your frontend domain on Vercel
+  "https://bookapp1-mg44.vercel.app"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = "CORS policy does not allow access from this origin.";
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true, // ✅ Allow cookies, auth headers, etc.
-}));
+// ✅ Manual CORS headers + preflight handling
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200); // Handle preflight requests
+  }
+
+  next();
+});
+
 
 // ✅ Connect to MongoDB
 mongoose

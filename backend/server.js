@@ -10,7 +10,22 @@ const AdminAction = require("./models/adminData");
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(cors());
+const allowedOrigins = [
+  "https://bookapp1-mg44.vercel.app",  // ✅ Your frontend domain on Vercel
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = "CORS policy does not allow access from this origin.";
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // ✅ Allow cookies, auth headers, etc.
+}));
 
 // ✅ Connect to MongoDB
 mongoose
